@@ -1,0 +1,23 @@
+{
+  "_instrucciones": "Agrega/edita aquí cada auto disponible. 'photo_filename' debe coincidir con el nombre del archivo que subiste a tu bucket de GCS, carpeta 'inventario/'. Borra los autos que ya se vendieron para que el bot deje de publicarlos.",
+  "autos": [
+    {
+      "marca": "Ford",
+      "modelo": "F-150",
+      "anio": 2019,
+      "kilometraje_km": 65000,
+      "precio_mxn": 385000,
+      "estado": "Excelente estado, legalizado y con factura",
+      "photo_filename": "f150-2019.jpg"
+    },
+    {
+      "marca": "Honda",
+      "modelo": "Civic",
+      "anio": 2020,
+      "kilometraje_km": 42000,
+      "precio_mxn": 295000,
+      "estado": "Único dueño, legalizado, todo pagado",
+      "photo_filename": "civic-2020.jpg"
+    }
+  ]
+}
