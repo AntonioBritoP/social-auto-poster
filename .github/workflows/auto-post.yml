@@ -1,0 +1,46 @@
+name: Publicación automática en redes sociales
+
+on:
+  schedule:
+    # Horarios en UTC. Ajusta según tu zona horaria.
+    # Estos corresponden aprox. a 9am, 2pm y 7pm hora de Cuernavaca (UTC-6).
+    - cron: "0 15 * * *"   # 9:00 am
+    - cron: "0 20 * * *"   # 2:00 pm
+    - cron: "0 1 * * *"    # 7:00 pm
+  workflow_dispatch: {}    # te permite correrlo manualmente desde GitHub también
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependencias
+        run: pip install -r requirements.txt
+
+      - name: Verificar ffmpeg (necesario para armar el video de TikTok)
+        run: ffmpeg -version
+
+      - name: Configurar credenciales de Google Cloud
+        run: |
+          echo '${{ secrets.GCP_SERVICE_ACCOUNT_JSON }}' > /tmp/gcp-key.json
+          echo "GOOGLE_APPLICATION_CREDENTIALS=/tmp/gcp-key.json" >> $GITHUB_ENV
+
+      - name: Ejecutar publicación
+        working-directory: ./src
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+          GCP_LOCATION: ${{ secrets.GCP_LOCATION }}
+          GCS_BUCKET_NAME: ${{ secrets.GCS_BUCKET_NAME }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          META_PAGE_ACCESS_TOKEN: ${{ secrets.META_PAGE_ACCESS_TOKEN }}
+          META_PAGE_ID: ${{ secrets.META_PAGE_ID }}
+          META_IG_USER_ID: ${{ secrets.META_IG_USER_ID }}
+          TIKTOK_ACCESS_TOKEN: ${{ secrets.TIKTOK_ACCESS_TOKEN }}
+        run: python main.py
